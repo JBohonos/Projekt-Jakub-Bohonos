@@ -7,4 +7,4 @@ Gra będzie się składać z poniższych klas:
 - cKwadrat-klasa zawierająca właściwości kwadratów na planszy oraz metody i funkcje z nimi związane.
 - cFigura-klasa bazowa dla cKwadrat, zawierająca współrzędne kwadratów.
 
-[Szkic](Saper.png)
+![Szkic](Saper.png)
