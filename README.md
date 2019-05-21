@@ -20,3 +20,4 @@ Podsumowanie szkicu(kolory są tylko przykładowe):
 Podsumowanie sterowania:
 - Lewy przycisk myszy-odkrycie pola.
 - Prawy przycisk myszy-zaznaczenie nieodkrytego pola przez gracza, który może umważać, że tam jest mina(ponownie nacisnąć na pole aby odznaczyć).
+Jeśli wokól naciśniętego pola znajdują się pola bez żadnych min wokól siebie to samoistnie się odkryją.
