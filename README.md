@@ -7,4 +7,16 @@ Gra będzie się składać z poniższych klas:
 - cKwadrat-klasa zawierająca właściwości kwadratów na planszy oraz metody i funkcje z nimi związane.
 - cFigura-klasa bazowa dla cKwadrat, zawierająca współrzędne kwadratów.
 
+Szkic:
+
 ![Szkic](Saper.png)
+
+Podsumowanie szkicu(kolory są tylko przykładowe):
+- Szary- odkryte już pola, bez żadnych min wokól siebie,
+- Zielone, ciemnozielone, żółte-odkryte pola z różną ilością min wokół siebie, zależnie od koloru.
+- Czerwone-odkryte pole z miną.
+- Pomarańczowy- nieodkryte pole, zaznaczone przez gracza, który może umważać, że tam jest mina.
+
+Podsumowanie sterowania:
+- Lewy przycisk myszy-odkrycie pola.
+- Prawy przycisk myszy-zaznaczenie nieodkrytego pola przez gracza, który może umważać, że tam jest mina(ponownie nacisnąć na pole aby odznaczyć).
