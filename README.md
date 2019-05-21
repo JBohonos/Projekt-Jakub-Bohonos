@@ -16,11 +16,11 @@ Podsumowanie szkicu(kolory są tylko przykładowe):
 - Szary- odkryte już pola, bez żadnych min wokól siebie,
 - Zielone, ciemnozielone, żółte-odkryte pola z różną ilością min wokół siebie, zależnie od koloru.
 - Czerwone-odkryte pole z miną.
-- Pomarańczowy- nieodkryte pole, zaznaczone przez gracza, który może umważać, że tam jest mina.
+- Pomarańczowy- nieodkryte pole, zaznaczone przez gracza, który może uważać, że tam jest mina.
 
 Podsumowanie sterowania:
 - Lewy przycisk myszy-odkrycie pola.
-- Prawy przycisk myszy-zaznaczenie nieodkrytego pola przez gracza, który może umważać, że tam jest mina(ponownie nacisnąć na pole aby odznaczyć).
+- Prawy przycisk myszy-zaznaczenie nieodkrytego pola przez gracza, który może uważać, że tam jest mina(ponownie nacisnąć na pole aby odznaczyć).
 
 Jeśli wokól naciśniętego pola znajdują się pola bez żadnych min wokól siebie to samoistnie się odkryją.
 
