@@ -12,6 +12,7 @@ Szkic:
 ![Szkic](Saper.png)
 
 Podsumowanie szkicu(kolory są tylko przykładowe):
+- Czarny- nieodkryte pola.
 - Szary- odkryte już pola, bez żadnych min wokól siebie,
 - Zielone, ciemnozielone, żółte-odkryte pola z różną ilością min wokół siebie, zależnie od koloru.
 - Czerwone-odkryte pole z miną.
