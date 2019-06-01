@@ -8,13 +8,21 @@ cScena::cScena():active_id(0), vector_active_id(0) {
 	vector<cFigura*> prostokaty;
 	vector<cFigura*> prostokaty_pusty;
     
-	for (double i = 0; i < 5; i++)
+	//for (double i = 0; i < 5; i++)
+	//{
+	//	prostokaty.push_back(new cKwadrat(1.5 - i * 0.15, 0.5, -2, -2.25 + i * 0.5, 1, 0, 0));
+	//}
+	for (double j = 0; j < 30; j++)
 	{
-		prostokaty.push_back(new cKwadrat(1.5 - i * 0.15, 0.5, -2, -2.25 + i * 0.5, 1, 0));
+		for (double i = 0; i < 30; i++)
+		{
+			prostokaty.push_back(new cKwadrat(0.95, 0.95, 0.5+i, 0.5+j, 0, 0, 0));
+		}
+		kwadraty.push_back(prostokaty);
 	}
 	kwadraty.push_back(prostokaty);
-	kwadraty.push_back(prostokaty_pusty);
-	kwadraty.push_back(prostokaty_pusty);
+	//kwadraty.push_back(prostokaty_pusty);
+	//kwadraty.push_back(prostokaty_pusty);
 }
 cScena::~cScena()
 {
@@ -28,9 +36,9 @@ void cScena::resize(int width, int height) {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-ar, ar, -1.0, 1.0, 2.0, 100.0);
-    gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
-
+    //glFrustum(-ar, ar, -1.0, 1.0, 2.0, 100.0);
+    //gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
+	glOrtho(0, 30, 30, 0, 1, -1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -76,14 +84,15 @@ void cScena::key(unsigned char key, int x, int y)
 }
 void cScena::mouse(int button, int state, int x, int y)
 {
-	double openglX = ((double)x - 400) / 800 * 6.68;
-	double openglY = -((double)y - 300) / 600 * 5;
-
+	//double openglX = ((double)x - 400) / 800 * 6.68;
+	//double openglY = -((double)y - 300) / 600 * 5;
+	double openglX = (double)x / 800 * 30;
+	double openglY = (double)y / 800 * 30;
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
 	{		
 		if (active_id > -1 && vector_active_id> -1)
 		{
-			kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0);		
+			kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 0);		
 		}
 	}
 	else if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
@@ -102,7 +111,7 @@ void cScena::mouse(int button, int state, int x, int y)
 				
 					if ((*itr2)->czy_kliknieto(openglX, openglY))
 					{
-						(*itr2)->zmien_kolor(0, 1);
+						(*itr2)->zmien_kolor(0, 1, 0);
 						vector_active_id = vector_licznik;
 						active_id = licznik;
 						kliknieto = true;
@@ -123,13 +132,15 @@ void cScena::mouse(int button, int state, int x, int y)
 void cScena::motion(int x, int y)
 {
 	
-	double openglX = ((double)x - 400) / 800 * 6.68;
-	double openglY = -((double)y - 300) / 600 * 5;
+	//double openglX = ((double)x - 400) / 800 * 6.68;
+	//double openglY = -((double)y - 300) / 600 * 5;
+	double openglX = (double)x / 800 * 30;
+	double openglY = (double)y / 800 * 30;
 	
-	if (active_id > -1)
-	{
-		kwadraty[vector_active_id][active_id]->przesun_do(openglX, openglY);
-	}
+	//if (active_id > -1)
+	//{
+		//kwadraty[vector_active_id][active_id]->przesun_do(openglX, openglY);
+	//}
 }
 
 void cScena::set_callbacks() {
@@ -144,7 +155,7 @@ void cScena::set_callbacks() {
 void cScena::init(int argc, char **argv, const char *window_name) {
 
     glutInit(&argc, argv);
-    glutInitWindowSize(800, 600);
+    glutInitWindowSize(800, 800);
     glutInitWindowPosition(40, 40);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
 

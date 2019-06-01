@@ -2,7 +2,7 @@
 
 
 
-cFigura::cFigura(double x, double y, double r, double g):x_(x),y_(y),r_(r),g_(g)
+cFigura::cFigura(double x, double y, double r, double g, double blue):x_(x),y_(y),r_(r),g_(g),blue_(blue)
 {
 }
 
@@ -12,10 +12,11 @@ void cFigura::przesun(double dx, double dy)
 	y_ += dy;
 
 }
-void cFigura::zmien_kolor(double r, double g)
+void cFigura::zmien_kolor(double r, double g, double blue)
 {
 	r_ = r;
 	g_ = g;
+	blue_ = blue;
 }
 void cFigura::przesun_do(double x, double y)
 {

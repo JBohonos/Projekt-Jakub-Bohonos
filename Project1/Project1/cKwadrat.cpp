@@ -4,7 +4,7 @@
 
 #include "cKwadrat.h"
 
-cKwadrat::cKwadrat(double a, double b, double x, double y, double r, double g) : cFigura(x,y,r,g), a_(a), b_(b)  {
+cKwadrat::cKwadrat(double a, double b, double x, double y, double r, double g, double blue) : cFigura(x,y,r,g,blue), a_(a), b_(b)  {
 	
 	
 }
@@ -17,7 +17,7 @@ void cKwadrat::rysuj() {
     glRotated(0, 0.0, 1.0, 0.0);
     glRotated(0, 0.0, 0.0, 1.0);
 
-	glColor3d(r_, g_, 0.0);
+	glColor3d(r_, g_, blue_);
 
     glBegin(GL_POLYGON);
     {

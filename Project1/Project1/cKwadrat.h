@@ -10,7 +10,7 @@ class cKwadrat: public cFigura {
 double a_,b_;
 
 public:
-    cKwadrat(double a, double b, double x, double y,double r, double g);
+    cKwadrat(double a, double b, double x, double y,double r, double g, double blue);
     void rysuj();
 	bool czy_kliknieto(double x, double y);
 	void set_x(double x);
