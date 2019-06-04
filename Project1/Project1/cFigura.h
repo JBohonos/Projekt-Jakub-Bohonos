@@ -11,6 +11,7 @@ public:
 	void przesun(double dx, double dy);
 	void przesun_do(double x, double y);
 	void zmien_kolor(double r, double g, double blue);
+	double get_czerwony();
 	virtual bool czy_kliknieto(double x, double y) = 0;
 	~cFigura();
 };

@@ -23,6 +23,10 @@ void cFigura::przesun_do(double x, double y)
 	x_ = x;
 	y_ = y;
 }
+double cFigura::get_czerwony()
+{
+	return r_;
+}
 cFigura::~cFigura()
 {
 }

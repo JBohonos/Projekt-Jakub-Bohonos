@@ -5,22 +5,39 @@
 #include "cScena.h"
 
 cScena::cScena():active_id(0), vector_active_id(0) {
-	vector<cFigura*> prostokaty;
-	vector<cFigura*> prostokaty_pusty;
-    
+	//vector<cFigura*> prostokaty;
+	//vector<cFigura*> prostokaty_pusty;
+	//vector<int> linia_bomb;
+	//vector<bool> linia_nacisnietych_kwadratow;
+	srand(time(0));
 	//for (double i = 0; i < 5; i++)
 	//{
 	//	prostokaty.push_back(new cKwadrat(1.5 - i * 0.15, 0.5, -2, -2.25 + i * 0.5, 1, 0, 0));
 	//}
 	for (double j = 0; j < 30; j++)
 	{
+		vector<cFigura*> prostokaty;
+		vector<int> linia_bomb;
+		vector<bool> linia_nacisnietych_kwadratow;
 		for (double i = 0; i < 30; i++)
 		{
 			prostokaty.push_back(new cKwadrat(0.95, 0.95, 0.5+i, 0.5+j, 0, 0, 0));
+			linia_nacisnietych_kwadratow.push_back(false);
+			int los = rand() % 3 + 1;
+			if (los == 1)
+			{
+				linia_bomb.push_back(1);
+			}
+			else
+			{
+				linia_bomb.push_back(0);
+			}
 		}
+		bomby.push_back(linia_bomb);
 		kwadraty.push_back(prostokaty);
+		nacisniete_kwadraty.push_back(linia_nacisnietych_kwadratow);
 	}
-	kwadraty.push_back(prostokaty);
+	//kwadraty.push_back(prostokaty);
 	//kwadraty.push_back(prostokaty_pusty);
 	//kwadraty.push_back(prostokaty_pusty);
 }
@@ -92,7 +109,7 @@ void cScena::mouse(int button, int state, int x, int y)
 	{		
 		if (active_id > -1 && vector_active_id> -1)
 		{
-			kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 0);		
+			//kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 0);		
 		}
 	}
 	else if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
@@ -111,7 +128,7 @@ void cScena::mouse(int button, int state, int x, int y)
 				
 					if ((*itr2)->czy_kliknieto(openglX, openglY))
 					{
-						(*itr2)->zmien_kolor(0, 1, 0);
+						//(*itr2)->zmien_kolor(0, 1, 0);
 						vector_active_id = vector_licznik;
 						active_id = licznik;
 						kliknieto = true;
@@ -127,6 +144,51 @@ void cScena::mouse(int button, int state, int x, int y)
 			}
 		}
 		
+	}
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
+	{
+
+	}
+	else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+	{
+		int vector_licznik = 0;
+		active_id = -1;
+		vector_active_id = -1;
+		bool kliknieto = false;
+		for (auto itr = kwadraty.begin(); itr != kwadraty.end(); itr++)
+		{
+			int licznik = 0;
+			for (auto itr2 = (*itr).begin(); itr2 != (*itr).end(); itr2++)
+			{
+
+				if ((*itr2)->czy_kliknieto(openglX, openglY))
+				{
+					vector_active_id = vector_licznik;
+					active_id = licznik;
+					if (nacisniete_kwadraty[vector_active_id][active_id] == false)
+					{
+						if ((*itr2)->get_czerwony() < 0.5)
+						{
+							(*itr2)->zmien_kolor(1, 0.5, 0);
+						}
+						else
+						{
+							(*itr2)->zmien_kolor(0, 0, 0);
+						}
+					}
+					kliknieto = true;
+					break;
+				}
+
+				licznik++;
+			}
+			vector_licznik++;
+			if (kliknieto == true)
+			{
+				break;
+			}
+		}
+
 	}
 }
 void cScena::motion(int x, int y)

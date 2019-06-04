@@ -6,6 +6,9 @@
 #define FREEGLUT_CSCENA_H
 #include "cKwadrat.h"
 #include <vector>
+#include<iostream>
+#include<cstdlib>
+#include<ctime>
 using namespace std;
 //bindingi dla callbacków
 void resize_binding(int width, int height);
