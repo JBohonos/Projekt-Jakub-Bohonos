@@ -23,7 +23,7 @@ cScena::cScena():active_id(0), vector_active_id(0) {
 		{
 			prostokaty.push_back(new cKwadrat(0.95, 0.95, 0.5+i, 0.5+j, 0, 0, 0));
 			linia_nacisnietych_kwadratow.push_back(false);
-			int los = rand() % 3 + 1;
+			int los = rand() % 5 + 1;
 			if (los == 1)
 			{
 				linia_bomb.push_back(1);
@@ -40,6 +40,7 @@ cScena::cScena():active_id(0), vector_active_id(0) {
 	//kwadraty.push_back(prostokaty);
 	//kwadraty.push_back(prostokaty_pusty);
 	//kwadraty.push_back(prostokaty_pusty);
+	koniec_gry = false;
 }
 cScena::~cScena()
 {
@@ -101,31 +102,33 @@ void cScena::key(unsigned char key, int x, int y)
 }
 void cScena::mouse(int button, int state, int x, int y)
 {
-	//double openglX = ((double)x - 400) / 800 * 6.68;
-	//double openglY = -((double)y - 300) / 600 * 5;
-	double openglX = (double)x / 800 * 30;
-	double openglY = (double)y / 800 * 30;
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
-	{		
-		if (active_id > -1 && vector_active_id> -1)
-		{
-			//kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 0);		
-		}
-	}
-	else if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	if (koniec_gry == false)
 	{
-		
-		
-		int vector_licznik = 0;
-		active_id = -1;
-		vector_active_id = -1;
-		bool kliknieto = false;
-		for (auto itr = kwadraty.begin(); itr != kwadraty.end(); itr++)
+		//double openglX = ((double)x - 400) / 800 * 6.68;
+		//double openglY = -((double)y - 300) / 600 * 5;
+		double openglX = (double)x / 800 * 30;
+		double openglY = (double)y / 800 * 30;
+		if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
 		{
-			int licznik = 0;
-			for (auto itr2 = (*itr).begin(); itr2 != (*itr).end(); itr2++)
-			{	
-				
+			if (active_id > -1 && vector_active_id > -1)
+			{
+				//kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 0);		
+			}
+		}
+		else if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+		{
+
+
+			int vector_licznik = 0;
+			active_id = -1;
+			vector_active_id = -1;
+			bool kliknieto = false;
+			for (auto itr = kwadraty.begin(); itr != kwadraty.end(); itr++)
+			{
+				int licznik = 0;
+				for (auto itr2 = (*itr).begin(); itr2 != (*itr).end(); itr2++)
+				{
+
 					if ((*itr2)->czy_kliknieto(openglX, openglY))
 					{
 						//(*itr2)->zmien_kolor(0, 1, 0);
@@ -134,61 +137,168 @@ void cScena::mouse(int button, int state, int x, int y)
 						kliknieto = true;
 						break;
 					}
-								
-				licznik++;
-			}			
-			vector_licznik++;
-			if (kliknieto == true)
-			{
-				break;
-			}
-		}
-		
-	}
-	if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
-	{
 
-	}
-	else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
-	{
-		int vector_licznik = 0;
-		active_id = -1;
-		vector_active_id = -1;
-		bool kliknieto = false;
-		for (auto itr = kwadraty.begin(); itr != kwadraty.end(); itr++)
-		{
-			int licznik = 0;
-			for (auto itr2 = (*itr).begin(); itr2 != (*itr).end(); itr2++)
-			{
-
-				if ((*itr2)->czy_kliknieto(openglX, openglY))
+					licznik++;
+				}
+				vector_licznik++;
+				if (kliknieto == true)
 				{
-					vector_active_id = vector_licznik;
-					active_id = licznik;
-					if (nacisniete_kwadraty[vector_active_id][active_id] == false)
-					{
-						if ((*itr2)->get_czerwony() < 0.5)
-						{
-							(*itr2)->zmien_kolor(1, 0.5, 0);
-						}
-						else
-						{
-							(*itr2)->zmien_kolor(0, 0, 0);
-						}
-					}
-					kliknieto = true;
 					break;
 				}
-
-				licznik++;
 			}
-			vector_licznik++;
-			if (kliknieto == true)
+			if (nacisniete_kwadraty[vector_active_id][active_id] == false)
 			{
-				break;
+				if (bomby[vector_active_id][active_id] == 1)
+				{
+					nacisniete_kwadraty[vector_active_id][active_id] = true;
+					kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 0);
+					cout << "Przegrales." << endl;
+					koniec_gry = true;
+				}
+				if (bomby[vector_active_id][active_id] == 0)
+				{
+					nacisniete_kwadraty[vector_active_id][active_id] = true;
+					int bomby_wokolo = 0;
+					if (vector_active_id != 0)
+					{
+						if (bomby[vector_active_id - 1][active_id] == 1)
+						{
+							bomby_wokolo++;
+						}
+					}
+					if (vector_active_id != 0 && active_id != 29)
+					{
+						if (bomby[vector_active_id - 1][active_id + 1] == 1)
+						{
+							bomby_wokolo++;
+						}
+					}
+					if (active_id != 29)
+					{
+						if (bomby[vector_active_id][active_id + 1] == 1)
+						{
+							bomby_wokolo++;
+						}
+					}
+					if (vector_active_id != 29 && active_id != 29)
+					{
+						if (bomby[vector_active_id + 1][active_id + 1] == 1)
+						{
+							bomby_wokolo++;
+						}
+					}
+					if (vector_active_id != 29)
+					{
+						if (bomby[vector_active_id + 1][active_id] == 1)
+						{
+							bomby_wokolo++;
+						}
+					}
+					if (vector_active_id != 29 && active_id != 0)
+					{
+						if (bomby[vector_active_id + 1][active_id - 1] == 1)
+						{
+							bomby_wokolo++;
+						}
+					}
+					if (active_id != 0)
+					{
+						if (bomby[vector_active_id][active_id - 1] == 1)
+						{
+							bomby_wokolo++;
+						}
+					}
+					if (vector_active_id != 0 && active_id != 0)
+					{
+						if (bomby[vector_active_id - 1][active_id - 1] == 1)
+						{
+							bomby_wokolo++;
+						}
+					}
+					if (bomby_wokolo == 1)
+					{
+						kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0, 0.5);
+					}
+					if (bomby_wokolo == 2)
+					{
+						kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0, 1);
+					}
+					if (bomby_wokolo == 3)
+					{
+						kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0.5, 0);
+					}
+					if (bomby_wokolo == 4)
+					{
+						kwadraty[vector_active_id][active_id]->zmien_kolor(0, 1, 0);
+					}
+					if (bomby_wokolo == 5)
+					{
+						kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0.5, 1);
+					}
+					if (bomby_wokolo == 6)
+					{
+						kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 1);
+					}
+					if (bomby_wokolo == 7)
+					{
+						kwadraty[vector_active_id][active_id]->zmien_kolor(0.25, 0, 1);
+					}
+					if (bomby_wokolo == 8)
+					{
+						kwadraty[vector_active_id][active_id]->zmien_kolor(1, 1, 0);
+					}
+					if (bomby_wokolo == 0)
+					{
+						kwadraty[vector_active_id][active_id]->zmien_kolor(0.9, 0.9, 0.9);
+					}
+				}
 			}
 		}
+		if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
+		{
 
+		}
+		else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+		{
+			int vector_licznik = 0;
+			active_id = -1;
+			vector_active_id = -1;
+			bool kliknieto = false;
+			for (auto itr = kwadraty.begin(); itr != kwadraty.end(); itr++)
+			{
+				int licznik = 0;
+				for (auto itr2 = (*itr).begin(); itr2 != (*itr).end(); itr2++)
+				{
+
+					if ((*itr2)->czy_kliknieto(openglX, openglY))
+					{
+						vector_active_id = vector_licznik;
+						active_id = licznik;
+						if (nacisniete_kwadraty[vector_active_id][active_id] == false)
+						{
+							if ((*itr2)->get_czerwony() < 0.5)
+							{
+								(*itr2)->zmien_kolor(1, 0.5, 0);
+							}
+							else
+							{
+								(*itr2)->zmien_kolor(0, 0, 0);
+							}
+						}
+						kliknieto = true;
+						break;
+					}
+
+					licznik++;
+				}
+				vector_licznik++;
+				if (kliknieto == true)
+				{
+					break;
+				}
+			}
+
+		}
 	}
 }
 void cScena::motion(int x, int y)

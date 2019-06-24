@@ -25,6 +25,7 @@ class cScena {
 	vector<vector<bool>> nacisniete_kwadraty;
 	int vector_active_id;
 	int active_id;
+	bool koniec_gry;
 public:
     cScena();
 	~cScena();
