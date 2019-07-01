@@ -9,6 +9,8 @@
 #include<iostream>
 #include<cstdlib>
 #include<ctime>
+#include<utility>
+
 using namespace std;
 //bindingi dla callbacków
 void resize_binding(int width, int height);
@@ -38,6 +40,8 @@ public:
     void init(int argc, char *argv[], const char* window_name);
     void set_callbacks();
 
+	friend int liczenie_bomb(vector<vector<int>> bomby, int vector_active_id, int active_id);
+	friend void kolorowanie_kwadratow(vector<vector<cFigura*>> &kwadraty, int bomby_wokolo, int vector_active_id, int active_id);
 };
 
 

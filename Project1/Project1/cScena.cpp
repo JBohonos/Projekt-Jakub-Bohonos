@@ -4,7 +4,7 @@
 
 #include "cScena.h"
 
-cScena::cScena():active_id(0), vector_active_id(0) {
+cScena::cScena() :active_id(0), vector_active_id(0) {
 	//vector<cFigura*> prostokaty;
 	//vector<cFigura*> prostokaty_pusty;
 	//vector<int> linia_bomb;
@@ -21,7 +21,7 @@ cScena::cScena():active_id(0), vector_active_id(0) {
 		vector<bool> linia_nacisnietych_kwadratow;
 		for (double i = 0; i < 30; i++)
 		{
-			prostokaty.push_back(new cKwadrat(0.95, 0.95, 0.5+i, 0.5+j, 0, 0, 0));
+			prostokaty.push_back(new cKwadrat(0.95, 0.95, 0.5 + i, 0.5 + j, 0, 0, 0));
 			linia_nacisnietych_kwadratow.push_back(false);
 			int los = rand() % 5 + 1;
 			if (los == 1)
@@ -47,31 +47,131 @@ cScena::~cScena()
 	//for (auto& el : prostokaty)
 		//delete el;
 }
+int liczenie_bomb(vector<vector<int>> bomby, int vector_active_id, int active_id)
+{
+	int bomby_wokolo = 0;
+	if (vector_active_id > 0)
+	{
+		if (bomby[vector_active_id - 1][active_id] == 1)
+		{
+			bomby_wokolo++;
+		}
+	}
+	if (vector_active_id > 0 && active_id < 29)
+	{
+		if (bomby[vector_active_id - 1][active_id + 1] == 1)
+		{
+			bomby_wokolo++;
+		}
+	}
+	if (active_id < 29)
+	{
+		if (bomby[vector_active_id][active_id + 1] == 1)
+		{
+			bomby_wokolo++;
+		}
+	}
+	if (vector_active_id < 29 && active_id < 29)
+	{
+		if (bomby[vector_active_id + 1][active_id + 1] == 1)
+		{
+			bomby_wokolo++;
+		}
+	}
+	if (vector_active_id < 29)
+	{
+		if (bomby[vector_active_id + 1][active_id] == 1)
+		{
+			bomby_wokolo++;
+		}
+	}
+	if (vector_active_id < 29 && active_id > 0)
+	{
+		if (bomby[vector_active_id + 1][active_id - 1] == 1)
+		{
+			bomby_wokolo++;
+		}
+	}
+	if (active_id > 0)
+	{
+		if (bomby[vector_active_id][active_id - 1] == 1)
+		{
+			bomby_wokolo++;
+		}
+	}
+	if (vector_active_id > 0 && active_id > 0)
+	{
+		if (bomby[vector_active_id - 1][active_id - 1] == 1)
+		{
+			bomby_wokolo++;
+		}
+	}
+	return bomby_wokolo;
+}
+void kolorowanie_kwadratow(vector<vector<cFigura*>> &kwadraty, int bomby_wokolo, int vector_active_id, int active_id)
+{
+	if (bomby_wokolo == 1)
+	{
+		kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0, 0.5);
+	}
+	if (bomby_wokolo == 2)
+	{
+		kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0, 1);
+	}
+	if (bomby_wokolo == 3)
+	{
+		kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0.5, 0);
+	}
+	if (bomby_wokolo == 4)
+	{
+		kwadraty[vector_active_id][active_id]->zmien_kolor(0, 1, 0);
+	}
+	if (bomby_wokolo == 5)
+	{
+		kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0.5, 1);
+	}
+	if (bomby_wokolo == 6)
+	{
+		kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 1);
+	}
+	if (bomby_wokolo == 7)
+	{
+		kwadraty[vector_active_id][active_id]->zmien_kolor(0.25, 0, 1);
+	}
+	if (bomby_wokolo == 8)
+	{
+		kwadraty[vector_active_id][active_id]->zmien_kolor(1, 1, 0);
+	}
+	if (bomby_wokolo == 0)
+	{
+		kwadraty[vector_active_id][active_id]->zmien_kolor(0.9, 0.9, 0.9);
+	}
+}
 void cScena::resize(int width, int height) {
-    const float ar = (float)width / (float)height;
+	const float ar = (float)width / (float)height;
 
-    glViewport(0, 0, width, height);
+	glViewport(0, 0, width, height);
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    //glFrustum(-ar, ar, -1.0, 1.0, 2.0, 100.0);
-    //gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//glFrustum(-ar, ar, -1.0, 1.0, 2.0, 100.0);
+	//gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
 	glOrtho(0, 30, 30, 0, 1, -1);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
 void cScena::idle() {
-    glutPostRedisplay();
+	glutPostRedisplay();
 }
 
 void cScena::display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glPushMatrix();
-    {
-        //for(auto& el: prostokaty)
-		
+	glPushMatrix();
+	{
+		//for(auto& el: prostokaty)
+
 		for (auto itr1 = kwadraty.begin(); itr1 != kwadraty.end(); itr1++)
 		{
 			for (auto itr2 = (*itr1).begin(); itr2 != (*itr1).end(); itr2++)
@@ -79,23 +179,23 @@ void cScena::display() {
 				(*itr2)->rysuj();
 			}
 		}
-		
-    }
-    glPopMatrix();
 
-    glutSwapBuffers();
+	}
+	glPopMatrix();
+
+	glutSwapBuffers();
 }
 void cScena::key(unsigned char key, int x, int y)
 {
-	switch(key)
+	switch (key)
 	{
-	
+
 	case'z':
 	{
-		
+
 	}
 
-		
+
 	}
 
 
@@ -153,103 +253,149 @@ void cScena::mouse(int button, int state, int x, int y)
 					nacisniete_kwadraty[vector_active_id][active_id] = true;
 					kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 0);
 					cout << "Przegrales." << endl;
-					koniec_gry = true;
+					//koniec_gry = true;
 				}
 				if (bomby[vector_active_id][active_id] == 0)
 				{
 					nacisniete_kwadraty[vector_active_id][active_id] = true;
 					int bomby_wokolo = 0;
-					if (vector_active_id != 0)
-					{
-						if (bomby[vector_active_id - 1][active_id] == 1)
-						{
-							bomby_wokolo++;
-						}
-					}
-					if (vector_active_id != 0 && active_id != 29)
-					{
-						if (bomby[vector_active_id - 1][active_id + 1] == 1)
-						{
-							bomby_wokolo++;
-						}
-					}
-					if (active_id != 29)
-					{
-						if (bomby[vector_active_id][active_id + 1] == 1)
-						{
-							bomby_wokolo++;
-						}
-					}
-					if (vector_active_id != 29 && active_id != 29)
-					{
-						if (bomby[vector_active_id + 1][active_id + 1] == 1)
-						{
-							bomby_wokolo++;
-						}
-					}
-					if (vector_active_id != 29)
-					{
-						if (bomby[vector_active_id + 1][active_id] == 1)
-						{
-							bomby_wokolo++;
-						}
-					}
-					if (vector_active_id != 29 && active_id != 0)
-					{
-						if (bomby[vector_active_id + 1][active_id - 1] == 1)
-						{
-							bomby_wokolo++;
-						}
-					}
-					if (active_id != 0)
-					{
-						if (bomby[vector_active_id][active_id - 1] == 1)
-						{
-							bomby_wokolo++;
-						}
-					}
-					if (vector_active_id != 0 && active_id != 0)
-					{
-						if (bomby[vector_active_id - 1][active_id - 1] == 1)
-						{
-							bomby_wokolo++;
-						}
-					}
-					if (bomby_wokolo == 1)
-					{
-						kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0, 0.5);
-					}
-					if (bomby_wokolo == 2)
-					{
-						kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0, 1);
-					}
-					if (bomby_wokolo == 3)
-					{
-						kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0.5, 0);
-					}
-					if (bomby_wokolo == 4)
-					{
-						kwadraty[vector_active_id][active_id]->zmien_kolor(0, 1, 0);
-					}
-					if (bomby_wokolo == 5)
-					{
-						kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0.5, 1);
-					}
-					if (bomby_wokolo == 6)
-					{
-						kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 1);
-					}
-					if (bomby_wokolo == 7)
-					{
-						kwadraty[vector_active_id][active_id]->zmien_kolor(0.25, 0, 1);
-					}
-					if (bomby_wokolo == 8)
-					{
-						kwadraty[vector_active_id][active_id]->zmien_kolor(1, 1, 0);
-					}
+
+					bomby_wokolo = liczenie_bomb(bomby, vector_active_id, active_id);
+
+					kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id, active_id);
+
 					if (bomby_wokolo == 0)
 					{
-						kwadraty[vector_active_id][active_id]->zmien_kolor(0.9, 0.9, 0.9);
+						vector<pair<int, int>> wektor_wspolrzedne_szarych_pol;
+						pair<int, int> wspolrzedne_szarych_pol;
+						do
+						{
+							
+
+							if (wektor_wspolrzedne_szarych_pol.size() != 0)
+							{
+								vector_active_id = wektor_wspolrzedne_szarych_pol[0].first;
+								active_id = wektor_wspolrzedne_szarych_pol[0].second;
+							}
+
+							if (wektor_wspolrzedne_szarych_pol.size() != 0)
+							{
+								wektor_wspolrzedne_szarych_pol.erase(wektor_wspolrzedne_szarych_pol.begin());
+							}
+
+							if (vector_active_id < 29)
+							{
+								
+								bomby_wokolo = liczenie_bomb(bomby, vector_active_id + 1, active_id);
+								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id + 1, active_id);
+								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id + 1][active_id] == false)
+								{
+									wspolrzedne_szarych_pol.first = vector_active_id + 1;
+									wspolrzedne_szarych_pol.second = active_id;
+									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+								}
+								nacisniete_kwadraty[vector_active_id + 1][active_id] = true;
+							}
+							
+							if (vector_active_id < 29 && active_id < 29)
+							{
+								
+								bomby_wokolo = liczenie_bomb(bomby, vector_active_id + 1, active_id + 1);
+								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id + 1, active_id + 1);
+								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id + 1][active_id + 1] == false)
+								{
+									wspolrzedne_szarych_pol.first = vector_active_id + 1;
+									wspolrzedne_szarych_pol.second = active_id + 1;
+									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+								}
+								nacisniete_kwadraty[vector_active_id + 1][active_id + 1] = true;
+							}
+
+							if (active_id < 29)
+							{
+								
+								bomby_wokolo = liczenie_bomb(bomby, vector_active_id, active_id + 1);
+								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id, active_id + 1);
+								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id][active_id + 1] == false)
+								{
+									wspolrzedne_szarych_pol.first = vector_active_id;
+									wspolrzedne_szarych_pol.second = active_id + 1;
+									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+								}
+								nacisniete_kwadraty[vector_active_id][active_id + 1] = true;
+							}
+
+							if (vector_active_id > 0 && active_id < 29)
+							{
+								
+								bomby_wokolo = liczenie_bomb(bomby, vector_active_id - 1, active_id + 1);
+								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id - 1, active_id + 1);
+								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id - 1][active_id + 1] == false)
+								{
+									wspolrzedne_szarych_pol.first = vector_active_id - 1;
+									wspolrzedne_szarych_pol.second = active_id + 1;
+									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+								}
+								nacisniete_kwadraty[vector_active_id - 1][active_id + 1] = true;
+							}
+
+							if (vector_active_id > 0)
+							{
+								
+								bomby_wokolo = liczenie_bomb(bomby, vector_active_id - 1, active_id);
+								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id - 1, active_id);
+								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id - 1][active_id] == false)
+								{
+									wspolrzedne_szarych_pol.first = vector_active_id - 1;
+									wspolrzedne_szarych_pol.second = active_id;
+									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+								}
+								nacisniete_kwadraty[vector_active_id - 1][active_id] = true;
+							}
+
+							if (vector_active_id > 0 && active_id > 0)
+							{
+								
+								bomby_wokolo = liczenie_bomb(bomby, vector_active_id - 1, active_id - 1);
+								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id - 1, active_id - 1);
+								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id - 1][active_id - 1] == false)
+								{
+									wspolrzedne_szarych_pol.first = vector_active_id - 1;
+									wspolrzedne_szarych_pol.second = active_id - 1;
+									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+								}
+								nacisniete_kwadraty[vector_active_id - 1][active_id - 1] = true;
+							}
+
+							if (active_id > 0)
+							{
+								
+								bomby_wokolo = liczenie_bomb(bomby, vector_active_id, active_id - 1);
+								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id, active_id - 1);
+								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id][active_id - 1] == false)
+								{
+									wspolrzedne_szarych_pol.first = vector_active_id;
+									wspolrzedne_szarych_pol.second = active_id - 1;
+									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+								}
+								nacisniete_kwadraty[vector_active_id][active_id - 1] = true;
+							}
+
+							if (vector_active_id < 29 && active_id > 0)
+							{
+								
+								bomby_wokolo = liczenie_bomb(bomby, vector_active_id + 1, active_id - 1);
+								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id + 1, active_id - 1);
+								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id + 1][active_id - 1] == false)
+								{
+									wspolrzedne_szarych_pol.first = vector_active_id + 1;
+									wspolrzedne_szarych_pol.second = active_id - 1;
+									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+								}
+								nacisniete_kwadraty[vector_active_id + 1][active_id - 1] = true;
+							}
+							
+						} while (wektor_wspolrzedne_szarych_pol.size() != 0);
 					}
 				}
 			}
@@ -303,12 +449,12 @@ void cScena::mouse(int button, int state, int x, int y)
 }
 void cScena::motion(int x, int y)
 {
-	
+
 	//double openglX = ((double)x - 400) / 800 * 6.68;
 	//double openglY = -((double)y - 300) / 600 * 5;
 	double openglX = (double)x / 800 * 30;
 	double openglY = (double)y / 800 * 30;
-	
+
 	//if (active_id > -1)
 	//{
 		//kwadraty[vector_active_id][active_id]->przesun_do(openglX, openglY);
@@ -316,9 +462,9 @@ void cScena::motion(int x, int y)
 }
 
 void cScena::set_callbacks() {
-    glutReshapeFunc(resize_binding);
-    glutDisplayFunc(display_binding);
-    glutIdleFunc(idle_binding);
+	glutReshapeFunc(resize_binding);
+	glutDisplayFunc(display_binding);
+	glutIdleFunc(idle_binding);
 	glutKeyboardFunc(key_binding);
 	glutMouseFunc(mouse_binding);
 	glutMotionFunc(motion_binding);
@@ -326,25 +472,26 @@ void cScena::set_callbacks() {
 
 void cScena::init(int argc, char **argv, const char *window_name) {
 
-    glutInit(&argc, argv);
-    glutInitWindowSize(800, 800);
-    glutInitWindowPosition(40, 40);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
+	glutInit(&argc, argv);
+	glutInitWindowSize(800, 800);
+	glutInitWindowPosition(40, 40);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
 
-    glutCreateWindow(window_name);
+	glutCreateWindow(window_name);
 
-    // set white as the clear colour
-    glClearColor(1, 1, 1, 1);
+	// set white as the clear colour
+	glClearColor(1, 1, 1, 1);
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
-    glEnable(GL_LIGHT0);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_COLOR_MATERIAL);
 
-    set_callbacks();
+	set_callbacks();
 
-    // start GLUT event loop. It ends when user close the window.
-    glutMainLoop();
+	// start GLUT event loop. It ends when user close the window.
+	glutMainLoop();
 }
+

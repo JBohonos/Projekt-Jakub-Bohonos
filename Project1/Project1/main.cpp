@@ -28,7 +28,7 @@ void motion_binding(int x, int y)
 int main(int argc, char *argv[])
 {	
     // it's still possible to use console to print messages
-    std::cout << "Hello openGL world!" << std::endl;
+    //std::cout << "Hello openGL world!" << std::endl;
 
 
 
