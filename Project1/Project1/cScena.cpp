@@ -23,7 +23,7 @@ cScena::cScena() :active_id(0), vector_active_id(0) {
 		{
 			prostokaty.push_back(new cKwadrat(0.95, 0.95, 0.5 + i, 0.5 + j, 0, 0, 0));
 			linia_nacisnietych_kwadratow.push_back(false);
-			int los = rand() % 5 + 1;
+			int los = rand() % 7 + 1;
 			if (los == 1)
 			{
 				linia_bomb.push_back(1);
@@ -162,6 +162,67 @@ void cScena::resize(int width, int height) {
 }
 
 void cScena::idle() {
+	bool sprawdzenie_klockow = true;
+	int j = 0;
+	for (auto itr = nacisniete_kwadraty.begin(); itr != nacisniete_kwadraty.end(); itr++)
+	{
+		int i = 0;
+		for (auto itr2 = (*itr).begin(); itr2 != (*itr).end(); itr2++)
+		{
+			if ((*itr2) == false && bomby[j][i] == 0)
+			{
+				sprawdzenie_klockow = false;
+			}
+			i++;
+		}
+		j++;
+	}
+	if (sprawdzenie_klockow == true)
+	{
+		cout << "Wygrales." << endl;
+		koniec_gry = true;
+	}
+	if (koniec_gry == true)
+	{
+		int poziom_trudnosci;
+		cout << "Gra sie skonczyla." << endl;
+		do
+		{
+			cout << "Podaj jaki poziom trudnosci ma miec nastepna gra(od 3-natrudniejsza do 10-najlatwiejsza): ";
+			cin >> poziom_trudnosci;
+		} while (poziom_trudnosci < 3 || poziom_trudnosci > 10);
+
+		j = 0;
+		srand(time(0));
+
+		for (auto itr = kwadraty.begin(); itr != kwadraty.end(); itr++)
+		{
+			int i = 0;
+			for (auto itr2 = (*itr).begin(); itr2 != (*itr).end(); itr2++)
+			{
+				(*itr2)->zmien_kolor(0, 0, 0);
+				nacisniete_kwadraty[j][i] = false;
+				int los = rand() % poziom_trudnosci + 1;
+				if (los == 1)
+				{
+					bomby[j][i] = 1;
+				}
+				else
+				{
+					bomby[j][i] = 0;
+				}
+				i++;
+			}
+			j++;
+		}
+		koniec_gry = false;
+		active_id = -1;
+		vector_active_id = -1;
+	}
+
+
+
+
 	glutPostRedisplay();
 }
 
@@ -246,156 +307,159 @@ void cScena::mouse(int button, int state, int x, int y)
 					break;
 				}
 			}
-			if (nacisniete_kwadraty[vector_active_id][active_id] == false)
+			if (active_id > -1 && vector_active_id > -1)
 			{
-				if (bomby[vector_active_id][active_id] == 1)
+				if (nacisniete_kwadraty[vector_active_id][active_id] == false)
 				{
-					nacisniete_kwadraty[vector_active_id][active_id] = true;
-					kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 0);
-					cout << "Przegrales." << endl;
-					//koniec_gry = true;
-				}
-				if (bomby[vector_active_id][active_id] == 0)
-				{
-					nacisniete_kwadraty[vector_active_id][active_id] = true;
-					int bomby_wokolo = 0;
-
-					bomby_wokolo = liczenie_bomb(bomby, vector_active_id, active_id);
-
-					kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id, active_id);
-
-					if (bomby_wokolo == 0)
+					if (bomby[vector_active_id][active_id] == 1)
 					{
-						vector<pair<int, int>> wektor_wspolrzedne_szarych_pol;
-						pair<int, int> wspolrzedne_szarych_pol;
-						do
+						nacisniete_kwadraty[vector_active_id][active_id] = true;
+						kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 0);
+						cout << "Przegrales." << endl;
+						koniec_gry = true;
+					}
+					if (bomby[vector_active_id][active_id] == 0)
+					{
+						nacisniete_kwadraty[vector_active_id][active_id] = true;
+						int bomby_wokolo = 0;
+
+						bomby_wokolo = liczenie_bomb(bomby, vector_active_id, active_id);
+
+						kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id, active_id);
+
+						if (bomby_wokolo == 0)
 						{
-							
-
-							if (wektor_wspolrzedne_szarych_pol.size() != 0)
+							vector<pair<int, int>> wektor_wspolrzedne_szarych_pol;
+							pair<int, int> wspolrzedne_szarych_pol;
+							do
 							{
-								vector_active_id = wektor_wspolrzedne_szarych_pol[0].first;
-								active_id = wektor_wspolrzedne_szarych_pol[0].second;
-							}
 
-							if (wektor_wspolrzedne_szarych_pol.size() != 0)
-							{
-								wektor_wspolrzedne_szarych_pol.erase(wektor_wspolrzedne_szarych_pol.begin());
-							}
 
-							if (vector_active_id < 29)
-							{
-								
-								bomby_wokolo = liczenie_bomb(bomby, vector_active_id + 1, active_id);
-								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id + 1, active_id);
-								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id + 1][active_id] == false)
+								if (wektor_wspolrzedne_szarych_pol.size() != 0)
 								{
-									wspolrzedne_szarych_pol.first = vector_active_id + 1;
-									wspolrzedne_szarych_pol.second = active_id;
-									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									vector_active_id = wektor_wspolrzedne_szarych_pol[0].first;
+									active_id = wektor_wspolrzedne_szarych_pol[0].second;
 								}
-								nacisniete_kwadraty[vector_active_id + 1][active_id] = true;
-							}
-							
-							if (vector_active_id < 29 && active_id < 29)
-							{
-								
-								bomby_wokolo = liczenie_bomb(bomby, vector_active_id + 1, active_id + 1);
-								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id + 1, active_id + 1);
-								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id + 1][active_id + 1] == false)
-								{
-									wspolrzedne_szarych_pol.first = vector_active_id + 1;
-									wspolrzedne_szarych_pol.second = active_id + 1;
-									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
-								}
-								nacisniete_kwadraty[vector_active_id + 1][active_id + 1] = true;
-							}
 
-							if (active_id < 29)
-							{
-								
-								bomby_wokolo = liczenie_bomb(bomby, vector_active_id, active_id + 1);
-								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id, active_id + 1);
-								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id][active_id + 1] == false)
+								if (wektor_wspolrzedne_szarych_pol.size() != 0)
 								{
-									wspolrzedne_szarych_pol.first = vector_active_id;
-									wspolrzedne_szarych_pol.second = active_id + 1;
-									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									wektor_wspolrzedne_szarych_pol.erase(wektor_wspolrzedne_szarych_pol.begin());
 								}
-								nacisniete_kwadraty[vector_active_id][active_id + 1] = true;
-							}
 
-							if (vector_active_id > 0 && active_id < 29)
-							{
-								
-								bomby_wokolo = liczenie_bomb(bomby, vector_active_id - 1, active_id + 1);
-								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id - 1, active_id + 1);
-								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id - 1][active_id + 1] == false)
+								if (vector_active_id < 29)
 								{
-									wspolrzedne_szarych_pol.first = vector_active_id - 1;
-									wspolrzedne_szarych_pol.second = active_id + 1;
-									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
-								}
-								nacisniete_kwadraty[vector_active_id - 1][active_id + 1] = true;
-							}
 
-							if (vector_active_id > 0)
-							{
-								
-								bomby_wokolo = liczenie_bomb(bomby, vector_active_id - 1, active_id);
-								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id - 1, active_id);
-								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id - 1][active_id] == false)
-								{
-									wspolrzedne_szarych_pol.first = vector_active_id - 1;
-									wspolrzedne_szarych_pol.second = active_id;
-									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									bomby_wokolo = liczenie_bomb(bomby, vector_active_id + 1, active_id);
+									kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id + 1, active_id);
+									if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id + 1][active_id] == false)
+									{
+										wspolrzedne_szarych_pol.first = vector_active_id + 1;
+										wspolrzedne_szarych_pol.second = active_id;
+										wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									}
+									nacisniete_kwadraty[vector_active_id + 1][active_id] = true;
 								}
-								nacisniete_kwadraty[vector_active_id - 1][active_id] = true;
-							}
 
-							if (vector_active_id > 0 && active_id > 0)
-							{
-								
-								bomby_wokolo = liczenie_bomb(bomby, vector_active_id - 1, active_id - 1);
-								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id - 1, active_id - 1);
-								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id - 1][active_id - 1] == false)
+								if (vector_active_id < 29 && active_id < 29)
 								{
-									wspolrzedne_szarych_pol.first = vector_active_id - 1;
-									wspolrzedne_szarych_pol.second = active_id - 1;
-									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
-								}
-								nacisniete_kwadraty[vector_active_id - 1][active_id - 1] = true;
-							}
 
-							if (active_id > 0)
-							{
-								
-								bomby_wokolo = liczenie_bomb(bomby, vector_active_id, active_id - 1);
-								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id, active_id - 1);
-								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id][active_id - 1] == false)
-								{
-									wspolrzedne_szarych_pol.first = vector_active_id;
-									wspolrzedne_szarych_pol.second = active_id - 1;
-									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									bomby_wokolo = liczenie_bomb(bomby, vector_active_id + 1, active_id + 1);
+									kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id + 1, active_id + 1);
+									if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id + 1][active_id + 1] == false)
+									{
+										wspolrzedne_szarych_pol.first = vector_active_id + 1;
+										wspolrzedne_szarych_pol.second = active_id + 1;
+										wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									}
+									nacisniete_kwadraty[vector_active_id + 1][active_id + 1] = true;
 								}
-								nacisniete_kwadraty[vector_active_id][active_id - 1] = true;
-							}
 
-							if (vector_active_id < 29 && active_id > 0)
-							{
-								
-								bomby_wokolo = liczenie_bomb(bomby, vector_active_id + 1, active_id - 1);
-								kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id + 1, active_id - 1);
-								if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id + 1][active_id - 1] == false)
+								if (active_id < 29)
 								{
-									wspolrzedne_szarych_pol.first = vector_active_id + 1;
-									wspolrzedne_szarych_pol.second = active_id - 1;
-									wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+
+									bomby_wokolo = liczenie_bomb(bomby, vector_active_id, active_id + 1);
+									kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id, active_id + 1);
+									if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id][active_id + 1] == false)
+									{
+										wspolrzedne_szarych_pol.first = vector_active_id;
+										wspolrzedne_szarych_pol.second = active_id + 1;
+										wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									}
+									nacisniete_kwadraty[vector_active_id][active_id + 1] = true;
 								}
-								nacisniete_kwadraty[vector_active_id + 1][active_id - 1] = true;
-							}
-							
-						} while (wektor_wspolrzedne_szarych_pol.size() != 0);
+
+								if (vector_active_id > 0 && active_id < 29)
+								{
+
+									bomby_wokolo = liczenie_bomb(bomby, vector_active_id - 1, active_id + 1);
+									kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id - 1, active_id + 1);
+									if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id - 1][active_id + 1] == false)
+									{
+										wspolrzedne_szarych_pol.first = vector_active_id - 1;
+										wspolrzedne_szarych_pol.second = active_id + 1;
+										wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									}
+									nacisniete_kwadraty[vector_active_id - 1][active_id + 1] = true;
+								}
+
+								if (vector_active_id > 0)
+								{
+
+									bomby_wokolo = liczenie_bomb(bomby, vector_active_id - 1, active_id);
+									kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id - 1, active_id);
+									if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id - 1][active_id] == false)
+									{
+										wspolrzedne_szarych_pol.first = vector_active_id - 1;
+										wspolrzedne_szarych_pol.second = active_id;
+										wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									}
+									nacisniete_kwadraty[vector_active_id - 1][active_id] = true;
+								}
+
+								if (vector_active_id > 0 && active_id > 0)
+								{
+
+									bomby_wokolo = liczenie_bomb(bomby, vector_active_id - 1, active_id - 1);
+									kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id - 1, active_id - 1);
+									if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id - 1][active_id - 1] == false)
+									{
+										wspolrzedne_szarych_pol.first = vector_active_id - 1;
+										wspolrzedne_szarych_pol.second = active_id - 1;
+										wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									}
+									nacisniete_kwadraty[vector_active_id - 1][active_id - 1] = true;
+								}
+
+								if (active_id > 0)
+								{
+
+									bomby_wokolo = liczenie_bomb(bomby, vector_active_id, active_id - 1);
+									kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id, active_id - 1);
+									if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id][active_id - 1] == false)
+									{
+										wspolrzedne_szarych_pol.first = vector_active_id;
+										wspolrzedne_szarych_pol.second = active_id - 1;
+										wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									}
+									nacisniete_kwadraty[vector_active_id][active_id - 1] = true;
+								}
+
+								if (vector_active_id < 29 && active_id > 0)
+								{
+
+									bomby_wokolo = liczenie_bomb(bomby, vector_active_id + 1, active_id - 1);
+									kolorowanie_kwadratow(kwadraty, bomby_wokolo, vector_active_id + 1, active_id - 1);
+									if (bomby_wokolo == 0 && nacisniete_kwadraty[vector_active_id + 1][active_id - 1] == false)
+									{
+										wspolrzedne_szarych_pol.first = vector_active_id + 1;
+										wspolrzedne_szarych_pol.second = active_id - 1;
+										wektor_wspolrzedne_szarych_pol.push_back(wspolrzedne_szarych_pol);
+									}
+									nacisniete_kwadraty[vector_active_id + 1][active_id - 1] = true;
+								}
+
+							} while (wektor_wspolrzedne_szarych_pol.size() != 0);
+						}
 					}
 				}
 			}
