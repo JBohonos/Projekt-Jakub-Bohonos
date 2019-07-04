@@ -27,11 +27,19 @@ void motion_binding(int x, int y)
 }
 int main(int argc, char *argv[])
 {	
-    // it's still possible to use console to print messages
-    //std::cout << "Hello openGL world!" << std::endl;
-
-
-
+    
+	cout << "Ilosc bomb zalezy od koloru pola: " << endl;
+	cout << "Ciemnoniebieski - 1" << endl;
+	cout << "Niebieski - 2" << endl;
+	cout << "Ciemnozielony - 3" << endl;
+	cout << "Zielony - 4" << endl;
+	cout << "Cyjanowy - 5" << endl;
+	cout << "Rozowy - 6" << endl;
+	cout << "Ciemnorozowy - 7" << endl;
+	cout << "Zolty - 8" << endl;
+	cout << "Szary - 0" << endl;
+	cout << "Czerwony - bomba" << endl;
+	cout << "Pomaranczowy - flaga" << endl;
     scena.init(argc,argv,"Saper");
 
 

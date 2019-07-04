@@ -128,7 +128,7 @@ void kolorowanie_kwadratow(vector<vector<cFigura*>> &kwadraty, int bomby_wokolo,
 	}
 	if (bomby_wokolo == 5)
 	{
-		kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0.5, 1);
+		kwadraty[vector_active_id][active_id]->zmien_kolor(0, 1, 1);
 	}
 	if (bomby_wokolo == 6)
 	{
@@ -136,7 +136,7 @@ void kolorowanie_kwadratow(vector<vector<cFigura*>> &kwadraty, int bomby_wokolo,
 	}
 	if (bomby_wokolo == 7)
 	{
-		kwadraty[vector_active_id][active_id]->zmien_kolor(0.25, 0, 1);
+		kwadraty[vector_active_id][active_id]->zmien_kolor(0.25, 0, 0.25);
 	}
 	if (bomby_wokolo == 8)
 	{
