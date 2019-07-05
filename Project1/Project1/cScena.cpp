@@ -1,19 +1,10 @@
-//
-// Created by piotr on 27.03.19.
-//
 
 #include "cScena.h"
 
 cScena::cScena() :active_id(0), vector_active_id(0) {
-	//vector<cFigura*> prostokaty;
-	//vector<cFigura*> prostokaty_pusty;
-	//vector<int> linia_bomb;
-	//vector<bool> linia_nacisnietych_kwadratow;
+	
 	srand(time(0));
-	//for (double i = 0; i < 5; i++)
-	//{
-	//	prostokaty.push_back(new cKwadrat(1.5 - i * 0.15, 0.5, -2, -2.25 + i * 0.5, 1, 0, 0));
-	//}
+	
 	for (double j = 0; j < 30; j++)
 	{
 		vector<cFigura*> prostokaty;
@@ -37,15 +28,12 @@ cScena::cScena() :active_id(0), vector_active_id(0) {
 		kwadraty.push_back(prostokaty);
 		nacisniete_kwadraty.push_back(linia_nacisnietych_kwadratow);
 	}
-	//kwadraty.push_back(prostokaty);
-	//kwadraty.push_back(prostokaty_pusty);
-	//kwadraty.push_back(prostokaty_pusty);
+	
 	koniec_gry = false;
 }
 cScena::~cScena()
 {
-	//for (auto& el : prostokaty)
-		//delete el;
+	
 }
 int liczenie_bomb(vector<vector<int>> bomby, int vector_active_id, int active_id)
 {
@@ -116,7 +104,7 @@ void kolorowanie_kwadratow(vector<vector<cFigura*>> &kwadraty, int bomby_wokolo,
 	}
 	if (bomby_wokolo == 2)
 	{
-		kwadraty[vector_active_id][active_id]->zmien_kolor(0, 0, 1);
+		kwadraty[vector_active_id][active_id]->zmien_kolor(0.3, 0.3, 1);
 	}
 	if (bomby_wokolo == 3)
 	{
@@ -153,9 +141,7 @@ void cScena::resize(int width, int height) {
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	//glFrustum(-ar, ar, -1.0, 1.0, 2.0, 100.0);
-	//gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
+	glLoadIdentity();	
 	glOrtho(0, 30, 30, 0, 1, -1);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -230,8 +216,7 @@ void cScena::display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glPushMatrix();
-	{
-		//for(auto& el: prostokaty)
+	{		
 
 		for (auto itr1 = kwadraty.begin(); itr1 != kwadraty.end(); itr1++)
 		{
@@ -246,34 +231,18 @@ void cScena::display() {
 
 	glutSwapBuffers();
 }
-void cScena::key(unsigned char key, int x, int y)
-{
-	switch (key)
-	{
 
-	case'z':
-	{
-
-	}
-
-
-	}
-
-
-}
 void cScena::mouse(int button, int state, int x, int y)
 {
 	if (koniec_gry == false)
-	{
-		//double openglX = ((double)x - 400) / 800 * 6.68;
-		//double openglY = -((double)y - 300) / 600 * 5;
+	{		
 		double openglX = (double)x / 800 * 30;
 		double openglY = (double)y / 800 * 30;
 		if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
 		{
 			if (active_id > -1 && vector_active_id > -1)
 			{
-				//kwadraty[vector_active_id][active_id]->zmien_kolor(1, 0, 0);		
+				
 			}
 		}
 		else if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
@@ -291,8 +260,7 @@ void cScena::mouse(int button, int state, int x, int y)
 				{
 
 					if ((*itr2)->czy_kliknieto(openglX, openglY))
-					{
-						//(*itr2)->zmien_kolor(0, 1, 0);
+					{						
 						vector_active_id = vector_licznik;
 						active_id = licznik;
 						kliknieto = true;
@@ -511,27 +479,12 @@ void cScena::mouse(int button, int state, int x, int y)
 		}
 	}
 }
-void cScena::motion(int x, int y)
-{
-
-	//double openglX = ((double)x - 400) / 800 * 6.68;
-	//double openglY = -((double)y - 300) / 600 * 5;
-	double openglX = (double)x / 800 * 30;
-	double openglY = (double)y / 800 * 30;
-
-	//if (active_id > -1)
-	//{
-		//kwadraty[vector_active_id][active_id]->przesun_do(openglX, openglY);
-	//}
-}
 
 void cScena::set_callbacks() {
 	glutReshapeFunc(resize_binding);
 	glutDisplayFunc(display_binding);
-	glutIdleFunc(idle_binding);
-	glutKeyboardFunc(key_binding);
-	glutMouseFunc(mouse_binding);
-	glutMotionFunc(motion_binding);
+	glutIdleFunc(idle_binding);	
+	glutMouseFunc(mouse_binding);	
 }
 
 void cScena::init(int argc, char **argv, const char *window_name) {

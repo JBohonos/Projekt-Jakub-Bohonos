@@ -16,12 +16,9 @@ using namespace std;
 void resize_binding(int width, int height);
 void idle_binding();
 void display_binding();
-void key_binding(unsigned char key, int x, int y);
 void mouse_binding(int button, int state, int x, int y);
-void motion_binding(int x, int y);
 
-class cScena {
-    //std::vector<cFigura*> prostokaty;
+class cScena {   
 	vector<vector<cFigura*>> kwadraty;
 	vector<vector<int>> bomby;
 	vector<vector<bool>> nacisniete_kwadraty;
@@ -33,10 +30,8 @@ public:
 	~cScena();
     void resize(int width, int height);
     void idle();
-    void display();
-	void key(unsigned char key, int x, int y);
-	void mouse(int button, int state, int x, int y);
-	void motion(int x, int y);
+    void display();	
+	void mouse(int button, int state, int x, int y);	
     void init(int argc, char *argv[], const char* window_name);
     void set_callbacks();
 
